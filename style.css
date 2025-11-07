@@ -1,8 +1,116 @@
-html, body {
-  margin: 0;
-  padding: 0;
+/* =================== VARIABILI LAYOUT =================== */
+:root{
+  --side: 320px;         /* larghezza sidebar */
+  --topbar: 34px;        /* riga nome+corso */
+  --titles: 120px;       /* spazio occupato dai titoli h1+h2 */
+  --sidebar-gap: 36px;   /* ↑ sposta la sidebar più in basso per NON toccare i titoli */
+
+  --bg: #0c0e10;
+  --card: #15171c;
+  --edge: #2a2f3a;
+  --text: #f1f1f1;
+  --muted:#b9bed1;
+  --accent:#ffa600;
 }
 
-canvas {
-  display: block;
+/* =================== BASE =================== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
+
+/* =================== INTESTAZIONE =================== */
+#top{padding:12px 16px 0 16px}
+#top .row.meta{
+  display:flex; gap:16px; font-size:13px; color:var(--muted);
+}
+#top .row.meta .left{font-weight:600}
+#top .row.meta .right{margin-left:auto; opacity:.9}
+
+h1{margin:8px 0 6px 0; font-size:28px; letter-spacing:.2px}
+h2{
+  margin:0 0 8px 0; font-size:16px; font-weight:600;
+  color:var(--text);
+}
+
+/* =================== SIDEBAR FISSA =================== */
+#sidebar{
+  position:fixed;
+  top:calc(var(--topbar) + var(--titles) + var(--sidebar-gap)); /* <-- qui sta il “più in basso” */
+  left:0; bottom:0; width:var(--side);
+  padding:16px; overflow:auto;
+}
+.card{
+  background:var(--card); border:1px solid var(--edge);
+  border-radius:10px; padding:12px 12px 10px; margin-bottom:12px;
+}
+.card h3{margin:0 0 8px 0; font-size:13px; letter-spacing:.4px}
+
+/* Gradiente LOW → HIGH */
+.gradient{
+  position:relative; height:18px; border-radius:9px; overflow:hidden;
+  background: linear-gradient(90deg, #ffd100 0%, #ff8a00 55%, #e42814 100%);
+  border:1px solid #3b3f4f;
+  margin-bottom:8px;
+}
+.gradient .label{
+  position:absolute; top:22px; font-size:12px; color:#fff;
+}
+.gradient .label.left{left:0}
+.gradient .label.right{right:0}
+
+/* Testi secondari */
+.muted{color:var(--muted); margin:4px 0 0 0; font-size:12px}
+.tiny{font-size:11px}
+
+/* Lista legenda con pallini */
+.legend{list-style:none; padding:0; margin:6px 0 6px 0}
+.legend li{
+  display:flex; align-items:center; gap:8px;
+  margin:6px 0; color:#e9edf6; font-size:13px;
+}
+.legend li span{
+  display:inline-block; width:14px; height:14px;
+  border-radius:50%; border:2px solid #ff7c00; box-shadow:0 0 0 1px #422;
+  background: radial-gradient(circle at center, #ffb400 25%, #ff6f00 80%);
+}
+.legend .ring{ background:transparent; }
+.legend .target{
+  position:relative; background:transparent;
+}
+.legend .target::after{
+  content:""; position:absolute; inset:3px; border-radius:50%;
+  border:2px solid #ff7c00;
+}
+.legend .pie{
+  background:conic-gradient(#ff7c00 0 180deg, transparent 180deg 360deg);
+}
+.legend .halo{
+  background:transparent; box-shadow:0 0 0 2px #ff7c00, 0 0 0 6px rgba(255,124,0,.25);
+  border:none;
+}
+.legend .other{
+  background:#ff7c00; opacity:.55;
+}
+
+/* =================== CANVAS HOLDER =================== */
+#canvas-holder{
+  position:relative;
+  margin-left:calc(var(--side) + 24px);          /* lascio spazio alla sidebar */
+  padding:calc(var(--topbar) + var(--titles) + var(--sidebar-gap) + 12px) 16px 16px 16px;
+  min-height:calc(100vh - 32px);
+}
+canvas{display:block; max-width:100%}
+
+/* =================== TOOLTIP (riempito da JS) =================== */
+.tip{
+  position:fixed; pointer-events:none;
+  background:#121317; color:#fff;
+  border:1px solid #ff4a2a; border-left:3px solid #ff4a2a;
+  border-radius:10px; padding:10px 12px; box-shadow:0 10px 28px rgba(0,0,0,.35);
+  max-width:280px; z-index:10;
+  font-size:12.5px; line-height:1.35;
+}
+.tip .name{font-weight:700; margin:0 0 4px 0}
