@@ -294,7 +294,7 @@ function drawCircleGlyph(x, y, size, kind, col) {
       break;
 
     case 'triangle': // Shield
-      // triangolo equilatero “punta in su”
+      // triangolo equilatero punta in su
       const h = size * 1.8;
       triangle(x, y - h * 0.58, x - h * 0.5, y + h * 0.42, x + h * 0.5, y + h * 0.42);
       break;
