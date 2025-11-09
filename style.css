@@ -1,4 +1,4 @@
-/* ============== VARIABILI SEMPLICI (regola qui l'altezza) ============== */
+/* ============== VARIABILI SEMPLICI  ============== */
 :root{
   --side: 320px;      /* larghezza sidebar */
   --gap: 24px;        /* spazio tra sidebar e canvas */
@@ -58,21 +58,72 @@ h2{margin:0 0 6px 0; font-size:15px; font-weight:600; color:var(--text)}
 .epoch-glossary dt{ font-weight:700; color:#e9edf6; }
 .epoch-glossary dd{ margin:0; color:#b9bed1; }
 
-
-/* Lista legenda con “pallini” */
+/* =================== LEGENDA (GLYPHS) =================== */
 .legend{list-style:none; padding:0; margin:10px 0}
-.legend li{display:flex; align-items:center; gap:8px; margin:6px 0; color:#e9edf6; font-size:13px}
-.legend li span{
-  display:inline-block; width:14px; height:14px; border-radius:50%;
-  border:2px solid #ff7c00; box-shadow:0 0 0 1px #422;
-  background: radial-gradient(circle at center, #ffb400 25%, #ff6f00 80%);
+.legend li{
+  display:flex; align-items:center; gap:8px; margin:6px 0;
+  color:#e9edf6; font-size:13px
 }
-.legend .ring{background:transparent}
-.legend .target{position:relative; background:transparent}
-.legend .target::after{content:""; position:absolute; inset:3px; border-radius:50%; border:2px solid #ff7c00}
-.legend .pie{background:conic-gradient(#ff7c00 0 180deg, transparent 180deg 360deg)}
-.legend .halo{background:transparent; box-shadow:0 0 0 2px #ff7c00, 0 0 0 6px rgba(255,124,0,.25); border:none}
-.legend .other{background:#ff7c00; opacity:.55}
+
+/* Base per il “segno” (classe .g) */
+.legend .g{
+  display:inline-block; vertical-align:middle;
+  width:14px; height:14px; margin-right:2px;
+  background:#ff8c00; border:2px solid #ff8c00; border-radius:50%;
+}
+
+/* 1) circle (Stratovolcano / Somma) — default già ok */
+.legend .circle{ border-radius:50%; }
+
+/* 2) triangle (Shield) */
+.legend .triangle{
+  width:0; height:0; background:transparent; border:none;
+  border-left:8px solid transparent; border-right:8px solid transparent;
+  border-bottom:14px solid #ff8c00;
+}
+
+/* 3) square (Volcanic field / Fissures) */
+.legend .square{ border-radius:3px; width:14px; height:14px; }
+
+/* 4) ring (Caldera / Maar / Tuff) */
+.legend .ring{
+  background:transparent; border-radius:50%; width:14px; height:14px;
+  border:2px solid #ff8c00;
+}
+
+/* 5) pentagon (Complex / Compound) */
+.legend .pentagon{
+  background:transparent; border:none; position:relative; width:16px; height:16px;
+  clip-path:polygon(50% 0%, 95% 38%, 77% 95%, 23% 95%, 5% 38%);
+  background:#ff8c00;
+}
+
+/* 6) cross (Submarine / Subglacial) */
+.legend .cross{
+  background:transparent; border:none; position:relative; width:14px; height:14px;
+}
+.legend .cross::before, .legend .cross::after{
+  content:""; position:absolute; background:#ff8c00;
+}
+.legend .cross::before{ left:0; right:0; top:6px; height:2px; }
+.legend .cross::after{ top:0; bottom:0; left:6px; width:2px; }
+
+/* 7) rect (Pyroclastic & Cinder cones) */
+.legend .rect{
+  width:18px; height:9px; border-radius:2px;
+}
+
+/* 8) star (Lava dome) */
+.legend .star{
+  width:16px; height:16px; border:none; background:#ff8c00;
+  clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+                    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/* 9) oval (Crater / Others) */
+.legend .oval{
+  width:18px; height:10px; border-radius:999px;
+}
 
 /* =================== CANVAS A DESTRA =================== */
 #canvas-holder{
@@ -92,9 +143,4 @@ canvas{display:block; max-width:100%}
 }
 .tip .name{font-weight:700; margin:0 0 4px 0}
 
-/* Fix minimo: legenda + tooltip su GitHub Pages */
-#sidebar .legend li{display:flex;align-items:center;gap:8px}
-#sidebar .legend li span{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid #ff7c00;background:radial-gradient(circle at center,#ffb400 25%,#ff6f00 80%)}
-#sidebar .legend .halo{background:transparent;border:none;box-shadow:0 0 0 2px #ff7c00,0 0 0 6px rgba(255,124,0,.25)}
-.tip{background:#ff4a2a!important;color:#fff!important;border:1px solid #4e1207;border-left:3px solid #ff4a2a}
 

@@ -256,12 +256,18 @@ function drawVolcanoes(mapX, mapY, mapW, mapH) {
 // Mappatura tipo → glifo (tutte variazioni “a cerchio” per una famiglia coerente)
 function typeToCircleGlyph(type) {
   const t = String(type).toLowerCase();
-  if (t.includes('stratovolcano') || t.includes('somma')) return 'dot';
+
+  if (t.includes('stratovolcano') || t.includes('somma')) return 'circle';
+  if (t.includes('shield')) return 'triangle';
+  if (t.includes('field') || t.includes('fissure')) return 'square';
   if (t.includes('caldera') || t.includes('maar') || t.includes('tuff')) return 'ring';
-  if (t.includes('cone') || t.includes('cinder') || t.includes('scoria') || t.includes('pumice') || t.includes('pyroclastic')) return 'target';
-  if (t.includes('crater') || t.includes('fissure') || t.includes('complex') || t.includes('field') || t.includes('compound') || t.includes('explosion')) return 'pie';
-  if (t.includes('shield') || t.includes('subglacial') || t.includes('submarine')) return 'halo';
-  return 'dot';
+  if (t.includes('complex') || t.includes('compound')) return 'pentagon';
+  if (t.includes('submarine') || t.includes('subglacial')) return 'cross';
+  if (t.includes('cinder') || t.includes('pyroclastic')) return 'rect';
+  if (t.includes('dome')) return 'star';
+  if (t.includes('crater') || t.includes('other')) return 'oval';
+
+  return 'circle'; // fallback
 }
 
 // Status → colore (giallo → arancio → rosso). Le soglie sono qualitative.
@@ -278,26 +284,80 @@ function statusToYellowRed(status) {
 // Disegno effettivo dei glifi circolari (tutte varianti coerenti)
 function drawCircleGlyph(x, y, size, kind, col) {
   push();
-  stroke(col); fill(col); strokeWeight(1.2);
-  if (kind === 'dot') {
-    ellipse(x, y, size * 1.8, size * 1.8);
-  } else if (kind === 'ring') {
-    noFill(); ellipse(x, y, size * 2.0, size * 2.0);
-  } else if (kind === 'target') {
-    noFill(); ellipse(x, y, size * 2.2, size * 2.2);
-    ellipse(x, y, size * 1.2, size * 1.2);
-  } else if (kind === 'pie') {
-    // “Mezzo pieno”: comunica categoria “crater/complex/…”
-    noStroke(); arc(x, y, size * 2.0, size * 2.0, -HALF_PI, HALF_PI, PIE);
-    noFill(); stroke(col); arc(x, y, size * 2.0, size * 2.0, HALF_PI, -HALF_PI);
-  } else if (kind === 'halo') {
-    // Alone + puntino centrale: “shield/subglacial/submarine”
-    noFill(); ellipse(x, y, size * 2.4, size * 2.4);
-    fill(col); noStroke(); ellipse(x, y, size * 1.0, size * 1.0);
-  } else {
-    ellipse(x, y, size * 1.8, size * 1.8);
+  stroke(col);
+  fill(col);
+  strokeWeight(1.2);
+
+  switch (kind) {
+    case 'circle': // Stratovolcano / Somma
+      ellipse(x, y, size * 1.8, size * 1.8);
+      break;
+
+    case 'triangle': // Shield
+      // triangolo equilatero “punta in su”
+      const h = size * 1.8;
+      triangle(x, y - h * 0.58, x - h * 0.5, y + h * 0.42, x + h * 0.5, y + h * 0.42);
+      break;
+
+    case 'square': // Volcanic field / Fissures
+      rectMode(CENTER);
+      rect(x, y, size * 1.8, size * 1.8);
+      break;
+
+    case 'ring': // Caldera / Maar / Tuff
+      noFill();
+      ellipse(x, y, size * 2.0, size * 2.0);
+      break;
+
+    case 'pentagon': // Complex / Compound
+      drawRegularPolygon(x, y, 5, size * 1.2);
+      break;
+
+    case 'cross': // Submarine / Subglacial
+      noFill();
+      strokeWeight(1.6);
+      line(x - size * 1.2, y, x + size * 1.2, y);
+      line(x, y - size * 1.2, x, y + size * 1.2);
+      break;
+
+    case 'rect': // Pyroclastic & Cinder cones
+      rectMode(CENTER);
+      rect(x, y, size * 2.4, size * 1.0);
+      break;
+
+    case 'star': // Lava dome
+      drawStar5(x, y, size * 1.2, size * 0.55);
+      break;
+
+    case 'oval': // Crater / Others
+      ellipse(x, y, size * 2.4, size * 1.4);
+      break;
+
+    default: // fallback
+      ellipse(x, y, size * 1.8, size * 1.8);
   }
+
   pop();
+}
+
+// ---------- helper per le nuove forme ----------
+function drawRegularPolygon(cx, cy, n, r) {
+  beginShape();
+  for (let i = 0; i < n; i++) {
+    const a = -HALF_PI + (TWO_PI * i) / n;
+    vertex(cx + cos(a) * r, cy + sin(a) * r);
+  }
+  endShape(CLOSE);
+}
+
+function drawStar5(cx, cy, rOuter, rInner) {
+  beginShape();
+  for (let i = 0; i < 10; i++) {
+    const r = i % 2 === 0 ? rOuter : rInner;
+    const a = -HALF_PI + (TWO_PI * i) / 10;
+    vertex(cx + cos(a) * r, cy + sin(a) * r);
+  }
+  endShape(CLOSE);
 }
 
 // ============================================================================
